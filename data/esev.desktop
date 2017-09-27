@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=esev
+Comment=Extremely Simple EXIF Viewer
+Icon=esev
+Exec=esev
+Categories=Utility;

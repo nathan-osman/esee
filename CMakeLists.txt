@@ -8,4 +8,5 @@ pkg_check_modules(LIBEXIF REQUIRED libexif)
 
 set(CMAKE_AUTOMOC ON)
 
+add_subdirectory(data)
 add_subdirectory(src)
