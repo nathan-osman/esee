@@ -22,28 +22,36 @@
  * IN THE SOFTWARE.
  */
 
-#include <QApplication>
-#include <QMessageBox>
+#ifndef EXIFDIALOG_H
+#define EXIFDIALOG_H
 
-#include "exifdialog.h"
+#include <QDialog>
 
-int main(int argc, char **argv)
+class QLabel;
+class QGridLayout;
+
+class ExifReader;
+
+class ExifDialog : public QDialog
 {
-    QApplication a(argc, argv);
+    Q_OBJECT
 
-    // Ensure that a single argument was specified
-    if (a.arguments().length() != 2) {
-        QMessageBox::critical(
-            nullptr,
-            QObject::tr("Error"),
-            QObject::tr("No input file specified.")
-        );
-        return 1;
-    }
+public:
 
-    // Create the dialog and show it
-    ExifDialog exifDialog(a.arguments().at(1));
-    exifDialog.show();
+    explicit ExifDialog(const QString &filename);
 
-    return a.exec();
-}
+private:
+
+    void setupUi();
+    void loadMedia();
+    void showThumbnail();
+    void addTag(const QString &key);
+
+    QString mFilename;
+    QLabel *mThumbnailImage;
+    QGridLayout *mGridLayout;
+
+    ExifReader *mReader;
+};
+
+#endif // EXIFDIALOG_H
