@@ -1,5 +1,6 @@
 set(SRC
     abstracttagwidget.cpp
+    jpegfile.cpp
     mainwindow.cpp
     main.cpp
     stringtagwidget.cpp

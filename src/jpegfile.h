@@ -22,53 +22,43 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef JPEGFILE_H
+#define JPEGFILE_H
 
+#include <libexif/exif-data.h>
+
+#include <QByteArray>
 #include <QList>
-#include <QMainWindow>
 
-class QAction;
-
-class AbstractTagWidget;
-class JpegFile;
+class QFile;
 
 /**
- * @brief Main application window
+ * @brief JPEG file loaded in memory
+ *
+ * In order to write a JPEG file with updated EXIF data, each segment in the
+ * file must be preserved for later reassembly.
  */
-class MainWindow : public QMainWindow
+class JpegFile
 {
-    Q_OBJECT
-
 public:
 
-    MainWindow();
-    virtual ~MainWindow();
+    explicit JpegFile(const QString &filename);
+    virtual ~JpegFile();
 
-    void openImage(const QString &filename);
+    bool open();
+    bool save();
 
-protected:
-
-    virtual void closeEvent(QCloseEvent *event);
-
-private slots:
-
-    void onOpen();
-    void onSave();
-
-    void onChanged();
+    ExifData *data() const;
 
 private:
 
-    void updateTitle();
-
-    QAction *mSave;
+    bool readQuint16(unsigned char *&p, const unsigned char *end, quint16 &value);
+    bool findNextSegment(unsigned char *&p, const unsigned char *end);
 
     QString mFilename;
-    JpegFile *mFile;
-    bool mDirty;
+    QList<QByteArray> mSegments;
 
-    QList<AbstractTagWidget*> mWidgets;
+    ExifData *mData;
 };
 
-#endif // MAINWINDOW_H
+#endif // JPEGFILE_H

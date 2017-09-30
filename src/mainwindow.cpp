@@ -36,12 +36,13 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "jpegfile.h"
 #include "mainwindow.h"
 #include "stringtagwidget.h"
 
 MainWindow::MainWindow()
     : mSave(new QAction(tr("&Save"), this)),
-      mData(nullptr),
+      mFile(nullptr),
       mDirty(false)
 {
     connect(mSave, &QAction::triggered, this, &MainWindow::onSave);
@@ -79,33 +80,35 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-    if (mData) {
-        exif_data_unref(mData);
+    if (mFile) {
+        delete mFile;
     }
 }
 
 void MainWindow::openImage(const QString &filename)
 {
-    ExifData *data = exif_data_new_from_file(filename.toUtf8().constData());
-    if (!data) {
+    // Attempt to open the file
+    JpegFile *file = new JpegFile(filename);
+    if (!file->open()) {
         QMessageBox::critical(
             this,
             tr("Error"),
             tr("Unable to read EXIF data from %1.").arg(QFileInfo(filename).fileName())
         );
+        delete file;
         return;
     }
 
-    // Free existing data and assign new data
-    if (mData) {
-        exif_data_unref(mData);
+    // Free an existing image
+    if (mFile) {
+        delete mFile;
     }
-    mData = data;
+    mFile = file;
 
     // Update each of the widgets
     foreach (AbstractTagWidget *widget, mWidgets) {
         widget->setEnabled(true);
-        widget->read(data);
+        widget->read(file->data());
     }
 
     // Update the rest of the UI
