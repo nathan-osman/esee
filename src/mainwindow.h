@@ -22,13 +22,21 @@
  * IN THE SOFTWARE.
  */
 
+#include <libexif/exif-data.h>
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QList>
 #include <QMainWindow>
 
 class QAction;
 
+class AbstractTagWidget;
+
+/**
+ * @brief Main application window
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -36,25 +44,32 @@ class MainWindow : public QMainWindow
 public:
 
     MainWindow();
+    virtual ~MainWindow();
 
     void openImage(const QString &filename);
 
 protected:
 
-    virtual void closeEvent(QCloseEvent * event);
+    virtual void closeEvent(QCloseEvent *event);
 
 private slots:
 
     void onOpen();
     void onSave();
 
+    void onChanged();
+
 private:
 
-    QAction *mOpen;
+    void updateTitle();
+
     QAction *mSave;
 
     QString mFilename;
+    ExifData *mData;
     bool mDirty;
+
+    QList<AbstractTagWidget*> mWidgets;
 };
 
 #endif // MAINWINDOW_H

@@ -47,6 +47,10 @@ public:
     void read(ExifData *data);
     void write(ExifData *data);
 
+signals:
+
+    void changed();
+
 protected:
 
     QString title() const;

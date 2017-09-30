@@ -23,27 +23,20 @@
  */
 
 #include <QApplication>
-#include <QMessageBox>
 
-#include "exifdialog.h"
+#include "mainwindow.h"
 
 int main(int argc, char **argv)
 {
     QApplication a(argc, argv);
 
-    // Ensure that a single argument was specified
-    if (a.arguments().length() != 2) {
-        QMessageBox::critical(
-            nullptr,
-            QObject::tr("Error"),
-            QObject::tr("No input file specified.")
-        );
-        return 1;
-    }
+    MainWindow mainWindow;
+    mainWindow.show();
 
-    // Create the dialog and show it
-    ExifDialog exifDialog(a.arguments().at(1));
-    exifDialog.show();
+    // If an argument was supplied, attempt to open the file
+    if (a.arguments().count() >= 2) {
+        mainWindow.openImage(a.arguments().at(1));
+    }
 
     return a.exec();
 }

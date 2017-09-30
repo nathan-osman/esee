@@ -32,6 +32,8 @@ StringTagWidget::StringTagWidget(const QString &name, QWidget *parent)
     : AbstractTagWidget(name, parent),
       mLineEdit(new QLineEdit)
 {
+    connect(mLineEdit, &QLineEdit::textChanged, this, &StringTagWidget::changed);
+
     QLabel *label = new QLabel(title());
 
     QVBoxLayout *layout = new QVBoxLayout;

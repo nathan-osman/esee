@@ -1,7 +1,8 @@
 set(SRC
-    exifdialog.cpp
-    exifreader.cpp
+    abstracttagwidget.cpp
+    mainwindow.cpp
     main.cpp
+    stringtagwidget.cpp
 )
 
 add_executable(esee WIN32 ${SRC})
