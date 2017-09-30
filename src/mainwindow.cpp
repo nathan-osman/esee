@@ -22,6 +22,8 @@
  * IN THE SOFTWARE.
  */
 
+#include <libexif/exif-ifd.h>
+
 #include <QAction>
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -53,8 +55,8 @@ MainWindow::MainWindow()
     file->addAction(tr("&Quit"), this, &MainWindow::close);
 
     // Create all of the widgets
-    mWidgets.append(new StringTagWidget("Make"));
-    mWidgets.append(new StringTagWidget("Model"));
+    mWidgets.append(new StringTagWidget(EXIF_IFD_0, "Make"));
+    mWidgets.append(new StringTagWidget(EXIF_IFD_0, "Model"));
 
     // Create a layout and add all of the widgets
     QVBoxLayout *layout = new QVBoxLayout;

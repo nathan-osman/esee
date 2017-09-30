@@ -22,24 +22,35 @@
  * IN THE SOFTWARE.
  */
 
+#include <cstring>
+
+#include <libexif/exif-content.h>
+#include <libexif/exif-format.h>
+#include <libexif/exif-mem.h>
+
 #include <QLabel>
 #include <QLineEdit>
 #include <QVBoxLayout>
 
 #include "stringtagwidget.h"
 
-StringTagWidget::StringTagWidget(const QString &name, QWidget *parent)
-    : AbstractTagWidget(name, parent),
+StringTagWidget::StringTagWidget(ExifIfd ifd, const QString &name, QWidget *parent)
+    : AbstractTagWidget(ifd, name, parent),
       mLineEdit(new QLineEdit)
 {
     connect(mLineEdit, &QLineEdit::textChanged, this, &StringTagWidget::changed);
 
-    QLabel *label = new QLabel(title());
+    QLabel *label = new QLabel(tr("%1:").arg(exif_tag_get_title(tag())));
 
     QVBoxLayout *layout = new QVBoxLayout;
     layout->addWidget(label);
     layout->addWidget(mLineEdit);
     setLayout(layout);
+}
+
+void StringTagWidget::reset()
+{
+    mLineEdit->clear();
 }
 
 void StringTagWidget::readTag(ExifEntry *entry)
@@ -49,7 +60,52 @@ void StringTagWidget::readTag(ExifEntry *entry)
     mLineEdit->setText(data);
 }
 
-void StringTagWidget::writeTag(ExifEntry *entry)
+void StringTagWidget::writeTag(ExifData *data)
 {
-    //...
+    ExifMem *mem = nullptr;
+    ExifEntry *entry = nullptr;
+
+    do {
+
+        // Create a memory allocator
+        mem = exif_mem_new_default();
+        if (!mem) {
+            break;
+        }
+
+        // Create a new entry
+        entry = exif_entry_new_mem(mem);
+        if (!entry) {
+            break;
+        }
+
+        // Retrieve the value of the widget
+        QByteArray value = mLineEdit->text().toUtf8();
+
+        // Allocate memory and copy data to the buffer
+        void *buffer = exif_mem_alloc(mem, value.length());
+        if (!buffer) {
+            break;
+        }
+        memcpy(buffer, value.constData(), value.length());
+
+        // Initialize the entry
+        entry->tag = tag();
+        entry->format = EXIF_FORMAT_UNDEFINED;
+        entry->components = value.length();
+        entry->data = reinterpret_cast<unsigned char*>(buffer);
+        entry->size = value.length();
+
+        // Add the entry to the correct IFD
+        exif_content_add_entry(data->ifd[ifd()], entry);
+
+    } while (false);
+
+    // Unref the entry and allocator if non-null
+    if (entry) {
+        exif_entry_unref(entry);
+    }
+    if (mem) {
+        exif_mem_unref(mem);
+    }
 }

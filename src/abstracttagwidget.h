@@ -27,6 +27,8 @@
 
 #include <libexif/exif-data.h>
 #include <libexif/exif-entry.h>
+#include <libexif/exif-ifd.h>
+#include <libexif/exif-tag.h>
 
 #include <QWidget>
 
@@ -34,7 +36,8 @@
  * @brief Base class for all tag widgets
  *
  * Each derived class must implement the two methods used for reading and
- * writing the tag value from an ExifData instance.
+ * writing the tag value from an ExifData instance as well as one for
+ * resetting the widget.
  */
 class AbstractTagWidget : public QWidget
 {
@@ -42,10 +45,12 @@ class AbstractTagWidget : public QWidget
 
 public:
 
-    AbstractTagWidget(const QString &name, QWidget *parent = nullptr);
+    AbstractTagWidget(ExifIfd ifd, const QString &name, QWidget *parent = nullptr);
 
     void read(ExifData *data);
     void write(ExifData *data);
+
+    virtual QSize sizeHint() const;
 
 signals:
 
@@ -53,14 +58,17 @@ signals:
 
 protected:
 
-    QString title() const;
-
+    virtual void reset() = 0;
     virtual void readTag(ExifEntry *entry) = 0;
-    virtual void writeTag(ExifEntry *entry) = 0;
+    virtual void writeTag(ExifData *data) = 0;
+
+    ExifIfd ifd() const;
+    ExifTag tag() const;
 
 private:
 
-    QString mName;
+    ExifIfd mIfd;
+    ExifTag mTag;
 };
 
 #endif // ABSTRACTTAGWIDGET_H

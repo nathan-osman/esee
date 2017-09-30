@@ -22,24 +22,19 @@
  * IN THE SOFTWARE.
  */
 
-
-#include <libexif/exif-tag.h>
-
 #include "abstracttagwidget.h"
 
-AbstractTagWidget::AbstractTagWidget(const QString &name, QWidget *parent)
+AbstractTagWidget::AbstractTagWidget(ExifIfd ifd, const QString &name, QWidget *parent)
     : QWidget(parent),
-      mName(name)
+      mIfd(ifd),
+      mTag(exif_tag_from_name(name.toUtf8().constData()))
 {
 }
 
 void AbstractTagWidget::read(ExifData *data)
 {
-    ExifTag tag = exif_tag_from_name(mName.toUtf8().constData());
-    if (!tag) {
-        return;
-    }
-    ExifEntry *entry = exif_data_get_entry(data, tag);
+    reset();
+    ExifEntry *entry = exif_data_get_entry(data, mTag);
     if (!entry) {
         return;
     }
@@ -48,14 +43,20 @@ void AbstractTagWidget::read(ExifData *data)
 
 void AbstractTagWidget::write(ExifData *data)
 {
-    //...
+    writeTag(data);
 }
 
-QString AbstractTagWidget::title() const
+QSize AbstractTagWidget::sizeHint() const
 {
-    ExifTag tag = exif_tag_from_name(mName.toUtf8().constData());
-    if (!tag) {
-        return QString();
-    }
-    return exif_tag_get_title(tag);
+    return QSize(400, QWidget::sizeHint().height());
+}
+
+ExifIfd AbstractTagWidget::ifd() const
+{
+    return mIfd;
+}
+
+ExifTag AbstractTagWidget::tag() const
+{
+    return mTag;
 }

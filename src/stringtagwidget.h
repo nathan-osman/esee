@@ -38,12 +38,13 @@ class StringTagWidget : public AbstractTagWidget
 
 public:
 
-    StringTagWidget(const QString &name, QWidget *parent = nullptr);
+    StringTagWidget(ExifIfd ifd, const QString &name, QWidget *parent = nullptr);
 
 protected:
 
+    virtual void reset();
     virtual void readTag(ExifEntry *entry);
-    virtual void writeTag(ExifEntry *entry);
+    virtual void writeTag(ExifData *data);
 
 private:
 
