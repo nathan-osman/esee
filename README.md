@@ -1,16 +1,16 @@
-## esev
+## esee
 
-esev provides a UI for viewing the EXIF data in JPG files.
+esee provides a UI for editing the EXIF data in JPG files.
 
 ### Screenshot
 
-Here's a screenshot of esev in action on Linux:
+Here's a screenshot of esee in action on Linux:
 
-![esev window](https://i.stack.imgur.com/wgbTz.png)
+![esee window](https://i.stack.imgur.com/wgbTz.png)
 
 ### Building
 
-To build esev, ensure that the following are installed:
+To build esee, ensure that the following are installed:
 
 - C++ compiler with C++11 support
 - CMake 3.2+
@@ -24,4 +24,4 @@ Open a terminal and run the following commands:
     cmake ..
     make install
 
-If all goes well, you should be able to run `esev <filename>` to show EXIF data.
+If all goes well, you should be able to run `esee <filename>` to edit EXIF data.

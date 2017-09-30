@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=esev
-Comment=Extremely Simple EXIF Viewer
-Icon=esev
-Exec=esev %f
+Name=esee
+Comment=Extremely Simple EXIF Editor
+Icon=esee
+Exec=esee %f
 Terminal=false
 MimeType=image/jpg;image/jpeg;
 Categories=Utility;Viewer;

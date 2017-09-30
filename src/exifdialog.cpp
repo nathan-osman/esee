@@ -46,7 +46,7 @@ ExifDialog::ExifDialog(const QString &filename)
 
 void ExifDialog::setupUi()
 {
-    setWindowTitle(tr("Extremely Simple EXIF Viewer - %1").arg(QFileInfo(mFilename).baseName()));
+    setWindowTitle(tr("Extremely Simple EXIF Editor - %1").arg(QFileInfo(mFilename).baseName()));
 
     QVBoxLayout *vboxLayout = new QVBoxLayout;
     vboxLayout->addWidget(mThumbnailImage);

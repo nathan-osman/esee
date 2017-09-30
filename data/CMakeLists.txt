@@ -1,2 +1,2 @@
-install(FILES esev.desktop DESTINATION share/applications)
-install(FILES esev.png DESTINATION share/pixmaps)
+install(FILES esee.desktop DESTINATION share/applications)
+install(FILES esee.png DESTINATION share/pixmaps)
