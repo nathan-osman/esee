@@ -22,6 +22,8 @@
  * IN THE SOFTWARE.
  */
 
+#include <libexif/exif-content.h>
+
 #include "abstracttagwidget.h"
 
 AbstractTagWidget::AbstractTagWidget(ExifIfd ifd, const QString &name, QWidget *parent)
@@ -43,6 +45,11 @@ void AbstractTagWidget::read(ExifData *data)
 
 void AbstractTagWidget::write(ExifData *data)
 {
+    ExifContent *content = data->ifd[mIfd];
+    ExifEntry *entry = exif_content_get_entry(content, mTag);
+    if (entry) {
+        exif_content_remove_entry(content, entry);
+    }
     writeTag(data);
 }
 

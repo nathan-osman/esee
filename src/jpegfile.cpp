@@ -157,8 +157,12 @@ bool JpegFile::save()
     return bytesWritten == buffer.length();
 }
 
-ExifData *JpegFile::data() const
+ExifData *JpegFile::data()
 {
+    if (!mData) {
+        mData = exif_data_new();
+    }
+
     return mData;
 }
 

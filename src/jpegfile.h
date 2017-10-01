@@ -48,7 +48,7 @@ public:
     bool open();
     bool save();
 
-    ExifData *data() const;
+    ExifData *data();
 
 private:
 

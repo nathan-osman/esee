@@ -91,7 +91,7 @@ void StringTagWidget::writeTag(ExifData *data)
 
         // Initialize the entry
         entry->tag = tag();
-        entry->format = EXIF_FORMAT_UNDEFINED;
+        entry->format = EXIF_FORMAT_ASCII;
         entry->components = value.length();
         entry->data = reinterpret_cast<unsigned char*>(buffer);
         entry->size = value.length();

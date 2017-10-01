@@ -42,22 +42,28 @@
 
 MainWindow::MainWindow()
     : mSave(new QAction(tr("&Save"), this)),
+      mSaveAs(new QAction(tr("&Save &As..."), this)),
       mFile(nullptr),
       mDirty(false)
 {
     connect(mSave, &QAction::triggered, this, &MainWindow::onSave);
+    connect(mSaveAs, &QAction::triggered, this, &MainWindow::onSaveAs);
 
     mSave->setEnabled(false);
+    mSaveAs->setEnabled(false);
 
     QMenu *file = menuBar()->addMenu(tr("&File"));
     file->addAction(tr("&Open..."), this, &MainWindow::onOpen);
     file->addAction(mSave);
+    file->addAction(mSaveAs);
     file->addSeparator();
     file->addAction(tr("&Quit"), this, &MainWindow::close);
 
     // Create all of the widgets
     mWidgets.append(new StringTagWidget(EXIF_IFD_0, "Make"));
     mWidgets.append(new StringTagWidget(EXIF_IFD_0, "Model"));
+    mWidgets.append(new StringTagWidget(EXIF_IFD_EXIF, "DateTimeOriginal"));
+    mWidgets.append(new StringTagWidget(EXIF_IFD_EXIF, "DateTimeDigitized"));
 
     // Create a layout and add all of the widgets
     QVBoxLayout *layout = new QVBoxLayout;
@@ -113,6 +119,7 @@ void MainWindow::openImage(const QString &filename)
 
     // Update the rest of the UI
     mSave->setEnabled(true);
+    mSaveAs->setEnabled(true);
     mFilename = filename;
     mDirty = false;
     updateTitle();
@@ -148,7 +155,36 @@ void MainWindow::onOpen()
 
 void MainWindow::onSave()
 {
-    //...
+    // Update data for each of the widgets
+    foreach (AbstractTagWidget *widget, mWidgets) {
+        widget->write(mFile->data());
+    }
+
+    if (!mFile->save()) {
+        QMessageBox::critical(
+            this,
+            tr("Error"),
+            tr("Unable to save %1.").arg(QFileInfo(mFilename).fileName())
+        );
+        return;
+    }
+
+    mDirty = false;
+    updateTitle();
+}
+
+void MainWindow::onSaveAs()
+{
+    QString filename = QFileDialog::getSaveFileName(
+        this,
+        tr("Save File As"),
+        QString(),
+        tr("JPEG images (*.jpg)")
+    );
+    if (!filename.isNull()) {
+        mFilename = filename;
+        onSave();
+    }
 }
 
 void MainWindow::onChanged()

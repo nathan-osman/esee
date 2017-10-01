@@ -55,6 +55,7 @@ private slots:
 
     void onOpen();
     void onSave();
+    void onSaveAs();
 
     void onChanged();
 
@@ -63,6 +64,7 @@ private:
     void updateTitle();
 
     QAction *mSave;
+    QAction *mSaveAs;
 
     QString mFilename;
     JpegFile *mFile;
