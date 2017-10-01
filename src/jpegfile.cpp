@@ -108,6 +108,9 @@ bool JpegFile::open()
                 segmentStart,
                 segmentSize
             );
+            if (!mData) {
+                return false;
+            }
         } else {
             mSegments.append(QByteArray(reinterpret_cast<const char*>(segmentStart), segmentSize));
         }
