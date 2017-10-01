@@ -6,7 +6,7 @@ esee provides a UI for editing the EXIF data in JPG files.
 
 Here's a screenshot of esee in action on Linux:
 
-![esee window](https://i.stack.imgur.com/wgbTz.png)
+![esee window](https://i.stack.imgur.com/TEyIK.png)
 
 ### Building
 
