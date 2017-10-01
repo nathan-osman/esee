@@ -55,6 +55,8 @@ private:
     bool readQuint16(unsigned char *&p, const unsigned char *end, quint16 &value);
     bool findNextSegment(unsigned char *&p, const unsigned char *end);
 
+    void writeQuint16(QByteArray &buffer, quint16 value);
+
     QString mFilename;
     QList<QByteArray> mSegments;
 

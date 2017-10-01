@@ -118,9 +118,43 @@ bool JpegFile::open()
 
 bool JpegFile::save()
 {
-    //...
+    // Create a buffer to store the file content
+    QByteArray buffer;
 
-    return false;
+    // Write the start-of-image segment
+    writeQuint16(buffer, 0xffd8);
+
+    // Write the EXIF segment
+    unsigned char *data;
+    unsigned int dataSize;
+    exif_data_save_data(mData, &data, &dataSize);
+    if (!dataSize) {
+        return false;
+    }
+    writeQuint16(buffer, 0xffe1);
+    writeQuint16(buffer, dataSize + sizeof(quint16));
+    buffer.append(reinterpret_cast<const char*>(data), dataSize);
+    free(data);
+
+    // Write the other segments
+    foreach (const QByteArray &segment, mSegments) {
+        buffer.append(segment);
+    }
+
+    // Write the end-of-image segment
+    writeQuint16(buffer, 0xffd9);
+
+    // Open the file for writing
+    QFile file(mFilename);
+    if (!file.open(QIODevice::WriteOnly)) {
+        return false;
+    }
+
+    // Write the buffer
+    qint64 bytesWritten = file.write(buffer);
+    file.close();
+
+    return bytesWritten == buffer.length();
 }
 
 ExifData *JpegFile::data() const
@@ -155,4 +189,10 @@ bool JpegFile::findNextSegment(unsigned char *&p, const unsigned char *end)
             return true;
         }
     }
+}
+
+void JpegFile::writeQuint16(QByteArray &buffer, quint16 value)
+{
+    value = qToBigEndian(value);
+    buffer.append(reinterpret_cast<const char*>(&value), sizeof(quint16));
 }
